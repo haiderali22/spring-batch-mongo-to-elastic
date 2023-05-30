@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.bson.Document;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.JobParametersInvalidException;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
@@ -29,7 +30,12 @@ public class Controller {
     public void startJob() throws JobInstanceAlreadyCompleteException,
             JobExecutionAlreadyRunningException,
             JobParametersInvalidException, JobRestartException {
-        jobLauncher.run(job, new JobParameters());
+
+        JobParameters jobParameters = new JobParametersBuilder()
+                .addLong("jobTime",System.currentTimeMillis())
+                .toJobParameters();
+
+        jobLauncher.run(job, jobParameters);
     }
 
     @PostMapping("/job/data/{collectionName}")

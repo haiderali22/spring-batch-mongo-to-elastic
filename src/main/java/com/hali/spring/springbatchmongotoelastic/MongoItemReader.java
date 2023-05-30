@@ -92,7 +92,12 @@ public class MongoItemReader<T> extends AbstractPaginatedDataItemReader<T> imple
                 pageRequest = PageRequest.of(this.page, this.pageSize, this.sort);
             else
                 pageRequest = PageRequest.of(this.page, this.pageSize);
-            String populatedQuery = this.replacePlaceholders(this.queryString, new ArrayList<>());
+
+            long lastUpdatedTime = jobExecution.getJobParameters().getLong("lastJobTime",0L);
+            long currentTime = jobExecution.getJobParameters().getLong("jobTime");
+
+            String populatedQuery = this.replacePlaceholders(this.queryString,
+                    List.of(lastUpdatedTime, currentTime));
             BasicQuery mongoQuery;
             if (StringUtils.hasText(this.fields)) {
                 mongoQuery = new BasicQuery(populatedQuery, this.fields);

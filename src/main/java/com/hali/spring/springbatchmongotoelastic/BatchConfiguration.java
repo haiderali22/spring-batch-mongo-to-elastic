@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.bson.Document;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.explore.JobExplorer;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.job.builder.SimpleJobBuilder;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
@@ -27,6 +28,8 @@ public class BatchConfiguration {
 
     private final  ElasticToMongoConfig elasticToMongoConfig;
     private final MongoOperations mongoTemplate;
+
+    private final JobExplorer jobExplorer;
     private final ElasticsearchOperations elasticsearchOperations;
 
     @Bean
@@ -35,7 +38,7 @@ public class BatchConfiguration {
 
         SimpleJobBuilder jobBuilder =  new JobBuilder("migrationJob", jobRepository)
                 .incrementer(new RunIdIncrementer())
-                .listener(new MyJobExecutionListener())
+                .listener(new MyJobExecutionListener(jobExplorer,"migrationJob"))
                 .start(buildStep(elasticToMongoConfig.getItems().get(0),
                         jobRepository, transactionManager));
 

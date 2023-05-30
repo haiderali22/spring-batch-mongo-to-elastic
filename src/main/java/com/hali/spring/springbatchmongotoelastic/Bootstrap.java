@@ -6,6 +6,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,12 +25,14 @@ public class Bootstrap  implements CommandLineRunner {
         Map<String,Object> person = new HashMap<>();
         person.put("username","admin");
         person.put("age",12);
+        person.put("updated_at", System.currentTimeMillis());
 
         mongoTemplate.getCollection("person").insertOne(new Document(person));
 
         Map<String,Object> car = new HashMap<>();
         car.put("manufacturer","Ford");
         car.put("year_build",2006);
+        car.put("updated_at", System.currentTimeMillis());
 
         mongoTemplate.getCollection("car").insertOne(new Document(car));
     }
